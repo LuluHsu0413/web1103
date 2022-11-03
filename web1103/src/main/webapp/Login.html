@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<form id="form1">
+<h2>
+User Name: <input type="text" id="user" name="User" value="John"/><br/>
+Password:  <input type="password" id="psd" name="password" value="g001"/><br/>
+<button >Send</button>
+<input type="button" value="Send"/>
+<input type="submit" value="Send"/>
+</h2>
+</form>
+<div id="display"></div>
+<div id="st"></div>
+<script>
+function show(data,status)
+{
+	$("#display").text(data);
+	$("#st").html(status);
+}
+function Send(e)
+{
+	e.preventDefault();
+	//因為表單會重新整理，然後不接收後端資料,不然就要使用input type="button"
+	//id是給前端的javascript使用，name是給後端使用
+	var u=$("#user").val();
+	var p=$("#psd").val();
+	var f=$("#form1").serialize();
+	//寫serilize是要丟給後端的程式使用，所以一定要給name
+	//$.post("UserPasswordServlet",{"User":u,"password":p},show);
+//	$.post("UserPasswordServlet",f,show);
+    $.ajax({
+        url:'UserPasswordServlet',
+        //後端接收的網址
+        type :'POST',
+        //使用的方法
+        data : f,
+        //丟出去的資料變數
+        contentType:"application/x-www-form-urlencoded",
+        //前端丟出去的資料格式 (一般)
+        //application/JSON (JSON)
+        cache: false,
+        datatype:"text/html",
+        //後端傳回來的資料格式
+       success : function(data) 
+       //接收的方法
+       {            	  
+           $("#display").html(data);
+       },error: function(data) 
+       {
+          console.log('無法送出');
+       }
+ });
+}
+function start()
+{
+	$("button").click(Send);
+}
+$(document).ready(start);
+</script>
+</body>
+</html>
